@@ -12,6 +12,6 @@ app.use(bodyParser.json());
 app.use(morgan('combined'));
 
 /** Routes */
-app.use('/api/satellite', routes);
+app.use('/api/', routes);
 
 export default app;

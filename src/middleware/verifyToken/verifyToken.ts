@@ -11,10 +11,7 @@ export const verifyToken: RequestHandler = async (req, res, next) => {
     }
 
     const oktaJwtVerifier = new OktaJwtVerifier({
-        issuer: process.env.OKTA_ISSUER,
-        assertClaims: {
-            'groups.includes': ['Admins', req.body.group.name]
-        }
+        issuer: process.env.OKTA_ISSUER
     });
 
     return oktaJwtVerifier

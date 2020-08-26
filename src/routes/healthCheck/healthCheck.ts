@@ -1,3 +1,3 @@
 import { RequestHandler } from 'express';
 
-export const healthCheck: RequestHandler = (_, res) => res.json({ status: 'Satellite-auth-api is up and running' });
+export const healthCheck: RequestHandler = (_, res) => res.json({ status: 'Service is up and running' });

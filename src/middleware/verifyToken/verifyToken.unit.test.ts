@@ -21,11 +21,7 @@ describe('verifyToken', () => {
             verifyAccessToken: () => Promise.resolve()
         }));
         const mockNext: NextFunction = jest.fn();
-        await verifyToken(
-            (<unknown>{ headers: { authorization: 'Bearer Token' }, body: { group: { name: 'dummy' } } }) as Request,
-            undefined,
-            mockNext
-        );
+        await verifyToken((<unknown>{ headers: { authorization: 'Bearer Token' }, body: {} }) as Request, undefined, mockNext);
         expect(mockNext).toHaveBeenCalled();
     });
 
@@ -39,7 +35,7 @@ describe('verifyToken', () => {
             mockStatus = jest.fn(() => ({ send: mockSend }));
 
         await verifyToken(
-            (<unknown>{ headers: { authorization: 'Bearer Token' }, body: { group: { name: 'dummy' } } }) as Request,
+            (<unknown>{ headers: { authorization: 'Bearer Token' }, body: {} }) as Request,
             (<unknown>{ status: mockStatus, set: mockSet }) as Response,
             undefined
         );
