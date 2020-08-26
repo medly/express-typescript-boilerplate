@@ -1,0 +1,59 @@
+service: satellite-app
+
+custom:
+  host:
+    ${opt:host, 'local'}
+  profile:
+    ci:
+    local: medly-${opt:stage}
+  satelliteApiEnv:  ${ssm:/aws/reference/secretsmanager/satelliteApiEnv~true}  
+provider:
+    name: aws
+    runtime: nodejs12.x
+    stage: dev
+    region: us-east-1
+    memorySize: 128
+    iamRoleStatements:
+        - Effect: "Allow"
+          Action:
+            - ec2:CreateNetworkInterface
+            - ec2:DescribeNetworkInterfaces
+            - ec2:DeleteNetworkInterface
+          Resource: "*"
+    apiGateway:
+        restApiId: ${ssm:/${opt:stage}/satelliteServiceRestApiId}
+        restApiRootResourceId: ${ssm:/${opt:stage}/satelliteServiceApiRootResourceId}
+        description: API Gateway for Satellite Service
+resources:
+  Resources:
+    LambdaSecurityGroup:
+      Type: "AWS::EC2::SecurityGroup"
+      Properties:
+        GroupName: ${self:service}-${self:provider.stage}-lambda
+        GroupDescription: Allow all outbound traffic, no inbound
+        SecurityGroupIngress:
+          - IpProtocol: -1
+            CidrIp: 127.0.0.1/32
+        VpcId: ${ssm:/${opt:stage}/satelliteServiceVpcId}        
+        
+functions:
+    satelliteApi:
+        vpc:
+          securityGroupIds:
+            - Ref: LambdaSecurityGroup
+          subnetIds:
+            "Fn::Split":
+              - ","
+              - ${ssm:/${opt:stage}/satelliteServicePrivateSubnets}  
+        handler: dist/server.handler
+        description: Lambda function for the Satellite API
+        timeout: 20
+        events:
+            - http:
+                  path: /
+                  method: ANY
+                  cors: true
+            - http:
+                  path: /{proxy+}
+                  method: ANY
+                  cors: true

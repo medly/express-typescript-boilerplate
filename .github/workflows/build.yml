@@ -1,0 +1,62 @@
+name: Tests
+
+on:
+    push:
+        branches: [master]
+    pull_request:
+        branches: [master]
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout repo
+              uses: actions/checkout@v2
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v1
+              with:
+                  node-version: '14'
+
+            - name: Install dependencies
+              run: yarn
+
+            - name: Run tests
+              run: yarn test
+
+            - name: Create bundle
+              run: yarn dist
+
+            - name: Upload dist
+              uses: actions/upload-artifact@v2
+              with:
+                  name: dist
+                  path: dist
+
+            - name: Configure AWS credentials
+              uses: aws-actions/configure-aws-credentials@v1
+              with:
+                  aws-access-key-id: ${{ secrets.S3_BUILD_ARTIFACTS_ACCESS_KEY_ID }}
+                  aws-secret-access-key: ${{ secrets.S3_BUILD_ARTIFACTS_SECRET_ACCESS_KEY }}
+                  aws-region: us-east-1
+
+            - name: Zip bundle
+              run: zip -r dist.zip ./* && zip -uj dist.zip ./infra/Makefile ./infra/serverless.yml
+
+            - name: Upload artifacts to the common S3 bucket for build artitacts of all apps
+              uses: medlypharmacy/s3-artifacts-action@master
+              with:
+                aws_access_key_id: ${{ secrets.S3_BUILD_ARTIFACTS_ACCESS_KEY_ID }}
+                aws_secret_access_key: ${{ secrets.S3_BUILD_ARTIFACTS_SECRET_ACCESS_KEY }}
+                aws_region: us-east-1
+                source_path: './dist.zip'
+                aws_s3_bucket_name: ${{ secrets.S3_BUILD_ARTIFACTS_BUCKET_NAME }}
+
+            - name: Trigger codepipeline webhook
+              uses: medlypharmacy/codepipeline-webhook-action@master
+              if: github.ref == 'refs/heads/master'
+              with:
+                name: "satellite-service-medly-dev-deploy"
+                aws_account_id: ${{ secrets.AWS_DEV_ACCOUNT_ID }}
+                codepipeline_webhook_url: ${{ secrets.CODEPIPELINE_WEBHOOK_URL }}
+                codepipeline_webhook_secret: ${{ secrets.CODEPIPELINE_WEBHOOK_SECRET }}                    

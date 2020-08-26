@@ -1,0 +1,29 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "esModuleInterop": true,
+        "isolatedModules": true,
+        "forceConsistentCasingInFileNames": true,
+        "lib": ["es2017", "es2015", "dom", "es2018.promise"],
+        "target": "esnext",
+        "noImplicitAny": true,
+        "resolveJsonModule": true,
+        "moduleResolution": "node",
+        "rootDir": "src",
+        "outDir": "dist",
+        "baseUrl": "src",
+        "skipLibCheck": true,
+        "strict": true,
+        "strictFunctionTypes": false,
+        "strictNullChecks": false,
+        "paths": {
+            "@routes": ["routes"],
+            "@routes/*": ["routes/*"],
+            "@middleware": ["middleware"],
+            "@middleware/*": ["middleware/*"]
+        },
+        "typeRoots": ["./typings", "./node_modules/@types"]
+    },
+    "include": ["src"],
+    "exclude": ["node_modules", "dist"]
+}
