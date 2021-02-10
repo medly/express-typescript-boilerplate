@@ -1,15 +1,15 @@
 # express-typescript-boilerplate
 
-## Steps to run locally:
+## Steps to run locally
 
 1. Add `.env` file with following environment variables.
 
-    ```
-       OKTA_ISSUER=<url for okta authorization server or okta issuer>
-       OKTA_DOMAIN=<okta domain>
-       OKTA_API_KEY=<okta authorization server api key>
-       OKTA_ADMINS_GROUP_ID=<Group id of super admin users>
-    ```
+   ```text
+      OKTA_ISSUER=<url for okta authorization server or okta issuer>
+      OKTA_DOMAIN=<okta domain>
+      OKTA_API_KEY=<okta authorization server api key>
+      OKTA_ADMINS_GROUP_ID=<Group id of super admin users>
+   ```
 
 2. Install dependencies using: `yarn`
 
@@ -17,7 +17,7 @@
 
 ## Tech Stack
 
--   WebServer: Express
--   Test: Jest
--   Http Test: Supertest
--   Build/Package: Yarn
+- WebServer: Express
+- Test: Jest
+- Http Test: Supertest
+- Build/Package: Yarn
