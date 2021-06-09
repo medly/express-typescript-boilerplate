@@ -52,11 +52,10 @@ jobs:
                 source_path: './dist.zip'
                 aws_s3_bucket_name: ${{ secrets.S3_BUILD_ARTIFACTS_BUCKET_NAME }}
 
-            - name: Trigger codepipeline webhook
+            - name: Deploy to Dev Environment
               uses: medlypharmacy/codepipeline-webhook-action@master
               if: github.ref == 'refs/heads/master'
               with:
-                name: "satellite-service-medly-dev-deploy"
-                aws_account_id: ${{ secrets.AWS_DEV_ACCOUNT_ID }}
+                deployment_environment: 'dev'
                 codepipeline_webhook_url: ${{ secrets.CODEPIPELINE_WEBHOOK_URL }}
                 codepipeline_webhook_secret: ${{ secrets.CODEPIPELINE_WEBHOOK_SECRET }}                    
